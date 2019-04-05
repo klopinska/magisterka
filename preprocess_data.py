@@ -1,27 +1,44 @@
-from keras.datasets import imdb
-from keras.utils.data_utils import get_file
 import pickle
 import pandas as pd
 import numpy as np
+import argparse
 
-PATH_WHOLE_IMDB = 'imdb_master.csv'
-PATH_FILTERED_IMDB  = ''
 
-def pickle_data(path):
-    (x_train, y_train), (x_test, y_test) = imdb.load_data()
-    dataset = np.concatenate((x_train, x_test))
-    pickle.dump(dataset, open(path, 'wb'))
-    word_to_index = imdb.get_word_index()
-    print(word_to_index)
+def pickle_data(filename, data):
+    pickle.dump(data, open(filename, 'wb'))
+
 
 def load_csv(path):
     data = pd.read_csv(path, encoding = "ISO-8859-1")
     data = data[["review", "label"]]
-    k = data.head()
-    print((k))
+    # data = data.head()
     data = np.array(data)
-    print(data[1])
+    return data
+
+
+def cut_sentences(max_length, data):
+    filtered_dataset = []
+    for row in data:
+        items = row[0].split('.')
+        index = 0
+        temp = items[index]
+        while len(temp) < max_length:
+            temp = temp + items[index]
+            index = index + 1
+        filtered_dataset.append([temp, row[1]])
+    return filtered_dataset
+
 
 if __name__ == "__main__":
-    # pickle_data(PATH_WHOLE_IMDB)
-    load_csv(PATH_WHOLE_IMDB)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--csv_path", type=str, required=False, default= 'imdb_master.csv',
+                        help="Path to imdb dataset.")
+    parser.add_argument("--filename", type=str, required=False, default= 'filtered_dataset.pkl',
+                        help="Name of pickle file.")
+    parser.add_argument("--max_length", type=int, required=False, default=30,
+                        help="Max length of sentence.")
+    args = parser.parse_args()
+
+    whole_data = load_csv(args.csv_path)
+    filtered_data = cut_sentences(30, whole_data)
+    pickle_data(args.filename, filtered_data)
