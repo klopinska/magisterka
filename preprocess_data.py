@@ -11,7 +11,7 @@ def pickle_data(filename, data):
 def load_csv(path):
     data = pd.read_csv(path, encoding = "ISO-8859-1")
     data = data[["review", "label"]]
-    # data = data.head()
+    data = data.head()
     data = np.array(data)
     return data
 
