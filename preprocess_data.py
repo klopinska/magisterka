@@ -22,7 +22,7 @@ def cut_sentences(max_length, data):
         items = row[0].split('.')
         index = 0
         temp = items[index]
-        while len(temp) < max_length:
+        while len(temp) < max_length and len(items) > index:
             temp = temp + items[index]
             index = index + 1
         filtered_dataset.append([temp, row[1]])
@@ -35,7 +35,7 @@ if __name__ == "__main__":
                         help="Path to imdb dataset.")
     parser.add_argument("--filename", type=str, required=False, default= 'filtered_dataset.pkl',
                         help="Name of pickle file.")
-    parser.add_argument("--max_length", type=int, required=False, default=60,
+    parser.add_argument("--max_length", type=int, required=False, default=100,
                         help="Max length of sentence.")
     args = parser.parse_args()
 
