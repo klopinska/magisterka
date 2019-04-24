@@ -11,7 +11,7 @@ def pickle_data(filename, data):
 def load_csv(path):
     data = pd.read_csv(path, encoding = "ISO-8859-1")
     data = data[["review", "label"]]
-    data = data.head()
+    # data = data.head()
     data = np.array(data)
     return data
 
@@ -35,10 +35,10 @@ if __name__ == "__main__":
                         help="Path to imdb dataset.")
     parser.add_argument("--filename", type=str, required=False, default= 'filtered_dataset.pkl',
                         help="Name of pickle file.")
-    parser.add_argument("--max_length", type=int, required=False, default=30,
+    parser.add_argument("--max_length", type=int, required=False, default=60,
                         help="Max length of sentence.")
     args = parser.parse_args()
 
     whole_data = load_csv(args.csv_path)
-    filtered_data = cut_sentences(30, whole_data)
+    filtered_data = cut_sentences(args.max_length, whole_data)
     pickle_data(args.filename, filtered_data)
